@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_ADD_MARKER = 2;
+    private static final int REQUEST_CAMERA_PERMISSION = 101;
 
     private GoogleMap mMap;
     private boolean locationPermissionGranted = false;
@@ -63,6 +64,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        }
+
     }
 
     @Override
@@ -157,13 +166,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .position(new LatLng(data.latitude, data.longitude))
                 .title(data.title);
 
+        // Use resized icon instead of full-size image
         if (data.imagePath != null && !data.imagePath.isEmpty()) {
-            File imgFile = new File(data.imagePath);
-            if (imgFile.exists()) {
-                Bitmap bmp = BitmapFactory.decodeFile(data.imagePath);
-                if (bmp != null) {
-                    opts.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-                }
+            Bitmap resizedIcon = getResizedMarkerBitmap(data.imagePath);
+            if (resizedIcon != null) {
+                opts.icon(BitmapDescriptorFactory.fromBitmap(resizedIcon));
             }
         }
 
@@ -237,4 +244,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
+
+    /**
+     * Load a bitmap from given file path and resize it to fit Marker icon.
+     */
+    private Bitmap getResizedMarkerBitmap(String imagePath) {
+        File imgFile = new File(imagePath);
+        if (!imgFile.exists()) return null;
+
+        Bitmap original = BitmapFactory.decodeFile(imagePath);
+        if (original == null) return null;
+
+        // Resize to a more reasonable marker size (e.g., 100x100 pixels)
+        return Bitmap.createScaledBitmap(original, 100, 100, false);
+    }
+
 }
