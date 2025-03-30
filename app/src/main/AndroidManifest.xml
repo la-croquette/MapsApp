@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fr.imt_atlantique.mapsapp">
+
+    <!-- Required permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--
+         如果你想把拍的照片存储到外部存储，也需要:
+         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+         但在 Android 10+ 上需使用 Scoped Storage 或 MediaStore。
+    -->
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MapsApp">
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!-- Marker Detail Activity -->
+        <activity
+            android:name=".MarkerDetailActivity"
+            android:label="@string/app_name" />
+
+        <!-- Add Marker Activity -->
+        <activity
+            android:name=".AddMarkerActivity"
+            android:label="@string/app_name" />
+
+        <!-- Main Activity (Maps) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <!-- This is the LAUNCHER Activity -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
